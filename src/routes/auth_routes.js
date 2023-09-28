@@ -12,7 +12,7 @@ router.post('/user/logout', logout);
 router.get('/user/profile', authRequired, profile);
 
 // Organization Routes
-router.post('/organization/register', registerOrganization); // Assuming you have organization-specific controller functions
+router.post('/organization/register', registerOrganization);
 router.post('/organization/login', loginOrganization);
 router.post('/organization/logout', logoutOrganization);
 router.get('/organization/profile', authRequired, profileOrganization);
