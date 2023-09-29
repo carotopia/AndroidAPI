@@ -1,12 +1,17 @@
 import mongoose from 'mongoose';
+import dotenv from 'dotenv';
 
+dotenv.config(); // Cargar las variables de entorno desde el archivo .env
 
-mongoose.set('strictQuery', false); // Desactivar strictQuery
+mongoose.set('strictQuery', false);
+
 export const connectDB = async () => {
     try {
-        await mongoose.connect("mongodb+srv://carolina123:carolina123@cluster0.fcoldwu.mongodb.net/FrisaDataBase?retryWrites=true&w=majority", {});
+        // Usar la variable de entorno para la conexión a MongoDB
+        await mongoose.connect(process.env.MONGODB_URI, {});
         console.log('>>> DB is connected');
     } catch (error) {
         console.log(error);
     }
 };
+
