@@ -3,6 +3,8 @@ import { login, register, logout, profile } from "../controllers/auth.controller
 import { authRequired } from '../middleware/validateToken.js';
 import { registerOrganization, loginOrganization, logoutOrganization, profileOrganization } from "../controllers/org.contoller.js"; // Import organization controller functions
 
+import { createPost, deletePost, getPost, getPosts, updatePost } from "../controllers/posts.controller.js";
+
 const router = Router();
 
 // User Routes
@@ -16,5 +18,11 @@ router.post('/organization/register', registerOrganization);
 router.post('/organization/login', loginOrganization);
 router.post('/organization/logout', logoutOrganization);
 router.get('/organization/profile', authRequired, profileOrganization);
+
+router.post('/posting', authRequired, createPost);
+router.get('/posts/all', getPosts);
+router.get('/posts/:id', getPost);
+router.delete('/posts/:id', authRequired, deletePost);
+router.put('/posts/:id', authRequired, updatePost);
 
 export default router;
