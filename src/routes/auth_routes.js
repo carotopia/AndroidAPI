@@ -1,7 +1,7 @@
 import { Router } from "express";
 import { login, register, logout, profile } from "../controllers/auth.controller.js";
 import { authRequired } from '../middleware/validateToken.js';
-import { registerOrganization, loginOrganization, logoutOrganization, profileOrganization } from "../controllers/org.contoller.js"; // Import organization controller functions
+import { registerOrganization, loginOrganization, logoutOrganization, profileOrganization, getAllOrganizations, findOrganizationsByName, findOrganizationsByTags } from "../controllers/org.contoller.js"; // Import organization controller functions
 
 import { createPost, deletePost, getPost, getPosts, updatePost } from "../controllers/posts.controller.js";
 
@@ -18,6 +18,10 @@ router.post('/organization/register', registerOrganization);
 router.post('/organization/login', loginOrganization);
 router.post('/organization/logout', logoutOrganization);
 router.get('/organization/profile', authRequired, profileOrganization);
+router.get('/organizations/all', getAllOrganizations);
+router.get('/organizations/name', findOrganizationsByName);
+router.get('/organizations/tags', findOrganizationsByTags);
+
 
 router.post('/posting', authRequired, createPost);
 router.get('/posts/all', getPosts);
