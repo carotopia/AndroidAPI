@@ -1,22 +1,25 @@
 import mongoose from "mongoose";
 import Post from '../models/post.model.js';
 
-
 export const createPost = async (req, res) => {
     const { title, content, image } = req.body;
 
     try {
-        const newPost = new Post({ title, content, image });
+        const newPost = new Post({ title, content, image, user: req.user.id });
 
-        // Save the new post in the database
+        // Guardar el nuevo post en la base de datos
         const postSaved = await newPost.save();
 
+        // Enviar toda la información del post recién creado en la respuesta
         res.status(201).json(postSaved);
 
     } catch (error) {
-        res.status(500).json({ message: 'Error creating post' });
+        res.status(500).json({ message: 'Error al crear el post' });
     }
 };
+
+
+
 
 export const getPosts = async (req, res) => {
     try {

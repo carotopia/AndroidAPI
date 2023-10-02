@@ -72,7 +72,62 @@ export const logoutOrganization = async (req, res) => {
         console.error('Error logging out:', error);
         res.status(500).json({ message: 'Error logging out' });
     }
+
+
+
+
+
 };
+
+export const getAllOrganizations = async (req, res) => {
+    try {
+        const organizations = await Organization.find();
+
+        if (!organizations || organizations.length === 0) {
+            return res.status(404).json({ message: 'No organizations found' });
+        }
+
+        res.json(organizations);
+    } catch (error) {
+        console.error('Error getting all organizations:', error);
+        res.status(500).json({ message: 'Error getting all organizations' });
+    }
+};
+
+export const findOrganizationsByName = async (req, res) => {
+    const { name } = req.query;
+
+    try {
+        const organizations = await Organization.find({ name: { $regex: name, $options: 'i' } });
+
+        if (!organizations || organizations.length === 0) {
+            return res.status(404).json({ message: 'No organizations found with that name' });
+        }
+
+        res.json(organizations);
+    } catch (error) {
+        console.error('Error finding organizations by name:', error);
+        res.status(500).json({ message: 'Error finding organizations by name' });
+    }
+};
+
+export const findOrganizationsByTags = async (req, res) => {
+    const { tags } = req.query;
+
+    try {
+        const organizations = await Organization.find({ tags: { $in: tags } });
+
+        if (!organizations || organizations.length === 0) {
+            return res.status(404).json({ message: 'No organizations found with those tags' });
+        }
+
+        res.json(organizations);
+    } catch (error) {
+        console.error('Error finding organizations by tags:', error);
+        res.status(500).json({ message: 'Error finding organizations by tags' });
+    }
+};
+
 
 
 
