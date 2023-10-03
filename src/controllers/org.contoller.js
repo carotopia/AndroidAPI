@@ -128,6 +128,35 @@ export const findOrganizationsByTags = async (req, res) => {
     }
 };
 
+export const getAllTags = async (req, res) => {
+    try {
+        const organizations = await Organization.find();
+        
+        if (!organizations || organizations.length === 0) {
+            return res.status(404).json({ message: 'No organizations found' });
+        }
+        
+        const allTags = new Set();
+        
+        organizations.forEach((org) => {
+            if (org.tags && org.tags.length > 0) {
+                org.tags.forEach((tag) => {
+                    allTags.add(tag);
+                });
+            }
+        });
+        
+        // Convert the Set to an array
+        const uniqueTags = [...allTags];
+        
+        res.json(uniqueTags);
+    } catch (error) {
+        console.error('Error getting all tags:', error);
+        res.status(500).json({ message: 'Error getting all tags' });
+    }
+};
+
+
 
 
 
