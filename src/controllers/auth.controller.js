@@ -16,8 +16,8 @@ export const register = async (req, res) => {
         const userSaved = await newUser.save();
 
         const token = await createAccessToken({id:userSaved._id});
-        res.cookie('token', token);
-        res.json({id:   userSaved._id,
+        res.json({token: token,
+            id:   userSaved._id,
             name: userSaved.name,
             last_name: userSaved.last_name,
             phone: userSaved.phone,
@@ -29,10 +29,9 @@ export const register = async (req, res) => {
 
     } catch (error) {
         
-        res.status(500).json({ message: 'Error registering user' })
+        res.status(500).json({ message: 'Error registering user lol' })
     }
 };
-
 export const login = async (req, res) => {
     const { phone, password } = req.body;
 
@@ -45,7 +44,7 @@ export const login = async (req, res) => {
         if (!isMatch) return res.status(400).json({ message: 'Incorrect password' });
 
         const token = await createAccessToken({ id: userFound._id });
-        res.cookie('token', token);
+        
         res.json({
             id: userFound._id,
             name: userFound.name,
@@ -55,21 +54,16 @@ export const login = async (req, res) => {
             favorites: userFound.favorites,
             createdAt: userFound.createdAt,
             updatedAt: userFound.updatedAt,
+            token: token, // Puedes enviar el token en la respuesta si lo necesitas en el cliente
         });
 
     } catch (error) {
-        console.error('Error logging in:', error); // Log the error for debugging
+        console.error('Error logging in:', error);
         res.status(500).json({ message: 'Error logging in' });
     }
-
-
 };
 
 export const logout = async (req, res) => {
-    res.cookie('token', "", {
-
-        expires: new Date(0)
-    })
     return res.status(200).json({ message: 'Logged out' });
 }
 export const profile = async (req, res) => {
@@ -77,6 +71,7 @@ export const profile = async (req, res) => {
 
     if (!userFound) return res.status(400).json({ message: 'User not found' });
     return res.json({
+
         id: userFound._id,
         name: userFound.name,
         last_name: userFound.last_name,
@@ -88,4 +83,3 @@ export const profile = async (req, res) => {
 
     });
 }
-
