@@ -83,3 +83,8 @@ export const profile = async (req, res) => {
 
     });
 }
+
+export const getAllUsers = async (req, res) => {
+    const users = await User.find();
+    res.json(users);
+}

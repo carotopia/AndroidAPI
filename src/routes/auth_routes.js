@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { login, register, logout, profile } from "../controllers/auth.controller.js";
+import { login, register, logout, profile, getAllUsers } from "../controllers/auth.controller.js";
 import { authRequired } from '../middleware/validateToken.js';
 import { registerOrganization, loginOrganization, logoutOrganization, profileOrganization, getAllOrganizations, findOrganizationsByName, findOrganizationsByTags, getAllTags } from "../controllers/org.contoller.js"; // Import organization controller functions
 
@@ -12,6 +12,7 @@ router.post('/user/register', register);
 router.post('/user/login', login);
 router.post('/user/logout', logout);
 router.get('/user/profile', authRequired, profile);
+router.get('/user/all', getAllUsers);
 
 
 
