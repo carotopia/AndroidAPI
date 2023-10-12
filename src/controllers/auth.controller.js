@@ -5,12 +5,12 @@ import { createAccessToken } from '../libs/jwt.js';
 
 
 export const register = async (req, res) => {
-    const { name, last_name, phone, email, password} = req.body;
+    const { name, last_name, phone, password} = req.body;
 
     try {
         const passwordHash = await bcrypt.hash(password, 10);
 
-        const newUser = new User({ name, last_name, phone, email, password: passwordHash});
+        const newUser = new User({ name, last_name, phone, password: passwordHash});
 
         // Save the new user in the database
         const userSaved = await newUser.save();
@@ -21,8 +21,6 @@ export const register = async (req, res) => {
             name: userSaved.name,
             last_name: userSaved.last_name,
             phone: userSaved.phone,
-            createdAt: userSaved.createdAt,
-            updatedAt: userSaved.updatedAt,
         });
 
        
