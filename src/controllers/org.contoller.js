@@ -127,10 +127,14 @@ export const findOrganizationsByName = async (req, res) => {
 };
 
 export const findOrganizationsByTags = async (req, res) => {
-    const { tags } = req.query;
+    const { tags } = req.body;
+
+    if (!tags || !Array.isArray(tags) || tags.length === 0) {
+        return res.status(400).json({ message: 'Invalid or missing tags in the request body' });
+    }
 
     try {
-        const organizations = await Organization.find({ tags: { $in: tags } });
+        const organizations = await Organization.find({ tags: { $all: tags } });
 
         if (!organizations || organizations.length === 0) {
             return res.status(404).json({ message: 'No organizations found with those tags' });
