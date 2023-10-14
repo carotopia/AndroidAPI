@@ -5,7 +5,7 @@ export const createPost = async (req, res) => {
     const { title, content, image } = req.body;
 
     try {
-        const newPost = new Post({ title, content, image, user: req.user.id });
+        const newPost = new Post({ title, content, image});
 
         // Guardar el nuevo post en la base de datos
         const postSaved = await newPost.save();

@@ -1,4 +1,5 @@
-import Organization from '../models/orgamodel.js'; // Make sure the filename matches 'orgmodel.js'
+import Organization from '../models/orgamodel.js'; 
+import AllowedEmails from "../models/allowed.js";
 
 import bcrypt from 'bcryptjs'; // Import other dependencies
 import { createAccessToken } from '../libs/jwt.js';
@@ -8,11 +9,19 @@ export const registerOrganization = async (req, res) => {
     const { name, phone, email, street, suburb, city, state, schedule, linkWeb, linkFacebook, linkInstagram, linkTwitter, linkOther, description, image, tags, password } = req.body;
 
     try {
-        const passwordHash = await bcrypt.hash(password, 10);
+        // Consulta el modelo AllowedEmails para verificar si el correo está permitido
+        const isEmailAllowed = await AllowedEmails.findOne({ email });
 
+        if (!isEmailAllowed) {
+            // El correo electrónico no está permitido, responde con un mensaje de error
+            return res.status(400).json({ message: 'Email is not allowed' });
+        }
+
+        // El correo electrónico está permitido, procede a crear la organización
+        const passwordHash = await bcrypt.hash(password, 10);
         const newOrganization = new Organization({ name, phone, email, street, suburb, city, state, schedule, linkWeb, linkFacebook, linkInstagram, linkTwitter, linkOther, description, image, tags, password: passwordHash });
 
-        // Save the new organization in the database
+        // Guarda la nueva organización en la base de datos
         const organizationSaved = await newOrganization.save();
 
         const token = await createAccessToken({ id: organizationSaved._id });
@@ -21,8 +30,7 @@ export const registerOrganization = async (req, res) => {
             token: token,
             id: organizationSaved._id,
             name: organizationSaved.name,
-
-            // Add other fields specific to your organization schema
+            // Otros campos específicos de tu esquema de organización
         });
 
     } catch (error) {
@@ -30,7 +38,8 @@ export const registerOrganization = async (req, res) => {
     }
 };
 
-export const loginOrganization = async (req, res) => {
+
+export const loginOrganization= async (req, res) => {
     const { phone, password } = req.body;
 
     try {
@@ -109,7 +118,7 @@ export const getAllOrganizations = async (req, res) => {
     }
 };
 
-export const findOrganizationsByName = async (req, res) => {
+export const findOrganizationsByName = async (req, res, validateToken) => {
     const { name } = req.query;
 
     try {
