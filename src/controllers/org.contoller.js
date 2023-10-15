@@ -143,6 +143,7 @@ export const findOrganizationsByTags = async (req, res) => {
     }
 
     try {
+        // Utiliza $all para buscar organizaciones que tengan todos los tags especificados
         const organizations = await Organization.find({ tags: { $all: tags } });
 
         if (!organizations || organizations.length === 0) {

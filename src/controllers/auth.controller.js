@@ -1,11 +1,13 @@
 import User from '../models/usermodel.js';
+import Organization from '../models/orgamodel.js';
 import bcrypt from 'bcryptjs';
 import { createAccessToken } from '../libs/jwt.js';
-
+import jwt from 'jsonwebtoken';
+import { TOKEN_SECRET } from '../config.js';
 
 
 export const register = async (req, res) => {
-    const { name, lastname, phone, password,description} = req.body;
+    const { name, lastname, phone, password, description} = req.body;
 
     try {
         const passwordHash = await bcrypt.hash(password, 10);
@@ -87,3 +89,44 @@ export const getAllUsers = async (req, res) => {
     const users = await User.find();
     res.json(users);
 }
+
+export const addFavorite = async (req, res) => {
+    const { userId, organizationId } = req.body; // Obtiene los IDs del usuario y la organización desde el cuerpo de la solicitud
+
+    try {
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'Usuario no encontrado' });
+        }
+
+        // Agrega el ID de la organización a la lista de favoritos del usuario
+        user.favorites.push(organizationId);
+
+        await user.save(); // Guarda los cambios en la base de datos
+
+        return res.status(200).json({ message: 'Organización agregada a favoritos' });
+    } catch (error) {
+        console.error('Error al agregar organización a favoritos:', error);
+        return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+};
+export const getFavorites = async (req, res) => {
+    const userId = req.params.userId; // Obtiene el userId de los parámetros de la URL
+  
+    try {
+      // Busca al usuario por su userId
+      const user = await User.findById(userId).populate('favorites'); // Usa "populate" para obtener los detalles de las organizaciones favoritas
+  
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      const favorites = user.favorites; // Obtiene la lista de organizaciones favoritas
+  
+      return res.status(200).json({ favorites });
+    } catch (error) {
+      console.error('Error al obtener favoritos:', error);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+  };
