@@ -29,7 +29,7 @@ router.post('/organization/logout', logoutOrganization);
 router.get('/organization/profile', authRequired, profileOrganization);
 router.get('/organizations/all', getAllOrganizations);
 router.get('/organizations/name', findOrganizationsByName);
-router.get('/organizations/tags/', findOrganizationsByTags);
+router.post('/organizations/findTags', findOrganizationsByTags);
 router.get('/organizations/tags/all', getAllTags);
 
 

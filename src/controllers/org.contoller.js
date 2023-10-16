@@ -143,8 +143,18 @@ export const findOrganizationsByTags = async (req, res) => {
     }
 
     try {
-        // Utiliza $all para buscar organizaciones que tengan todos los tags especificados
-        const organizations = await Organization.find({ tags: { $all: tags } });
+        let organizations = [];
+
+        for (let i = 0; i < tags.length; i++) {
+            const tag = tags[i];
+            const orgsWithTag = await Organization.find({ tags: { $all: [tag] } });
+
+            // Filtramos las organizaciones que no estén ya en la lista "organizations".
+            const newOrgs = orgsWithTag.filter(org => !organizations.some(existingOrg => existingOrg._id.toString() === org._id.toString()));
+
+            // Agregamos las nuevas organizaciones a la lista.
+            organizations = organizations.concat(newOrgs);
+        }
 
         if (!organizations || organizations.length === 0) {
             return res.status(404).json({ message: 'No organizations found with those tags' });
@@ -156,6 +166,8 @@ export const findOrganizationsByTags = async (req, res) => {
         res.status(500).json({ message: 'Error finding organizations by tags' });
     }
 };
+
+
 
 export const getAllTags = async (req, res) => {
     try {
