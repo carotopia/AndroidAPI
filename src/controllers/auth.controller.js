@@ -111,6 +111,7 @@ export const addFavorite = async (req, res) => {
         return res.status(500).json({ message: 'Error interno del servidor' });
     }
 };
+
 export const getFavorites = async (req, res) => {
     const userId = req.params.userId; // Obtiene el userId de los parámetros de la URL
   
@@ -119,14 +120,25 @@ export const getFavorites = async (req, res) => {
       const user = await User.findById(userId).populate('favorites'); // Usa "populate" para obtener los detalles de las organizaciones favoritas
   
       if (!user) {
-        return res.status(404).json({ message: 'Usuario no encontrado' });
+        return res.status(404).json([]);
       }
   
       const favorites = user.favorites; // Obtiene la lista de organizaciones favoritas
   
-      return res.status(200).json({ favorites });
+      // Crear un arreglo que contenga solo los objetos de organizaciones (sin el tag "favorites")
+      const organizations = favorites.map(favorite => ({
+        _id: favorite._id,
+        name: favorite.name,
+        phone: favorite.phone,
+        email: favorite.email,
+        image: favorite.image,
+        // Agrega otras propiedades que desees incluir
+      }));
+  
+      return res.status(200).json(organizations);
     } catch (error) {
       console.error('Error al obtener favoritos:', error);
-      return res.status(500).json({ message: 'Error interno del servidor' });
+      return res.status(500).json([]);
     }
   };
+  
