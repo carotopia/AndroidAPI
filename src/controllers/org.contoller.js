@@ -137,9 +137,7 @@ export const findOrganizationsByName = async (req, res, validateToken) => {
 
 export const findOrganizationsByTags = async (req, res) => {
     const { tags } = req.body;
-
-    console.log(tags)
-
+    console.log('Tags:', tags);
     if (!tags || !Array.isArray(tags) || tags.length === 0) {
         return res.status(400).json({ message: 'Invalid or missing tags in the request body' });
     }
