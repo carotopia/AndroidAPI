@@ -141,4 +141,32 @@ export const getFavorites = async (req, res) => {
       return res.status(500).json([]);
     }
   };
+
+  export const removeFromFavorites = async (req, res) => {
+    const userId = req.params.userId; // Obtiene el userId de los parámetros de la URL
+    const organizationId = req.body.organizationId; // Obtiene el ID de la organización de la solicitud del cliente
+  
+    try {
+      // Busca al usuario por su userId
+      const user = await User.findById(userId);
+  
+      if (!user) {
+        return res.status(404).json({ message: 'Usuario no encontrado' });
+      }
+  
+      // Verifica si la organización está en la lista de favoritos del usuario
+      if (!user.favorites.includes(organizationId)) {
+        return res.status(400).json({ message: 'La organización no está en la lista de favoritos' });
+      }
+  
+      // Elimina la organización de la lista de favoritos del usuario
+      user.favorites = user.favorites.filter(id => id !== organizationId);
+      await user.save();
+  
+      return res.status(200).json({ message: 'Organización eliminada de favoritos' });
+    } catch (error) {
+      console.error('Error al eliminar de favoritos:', error);
+      return res.status(500).json({ message: 'Error interno del servidor' });
+    }
+  };
   
