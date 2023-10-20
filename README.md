@@ -17,8 +17,7 @@ La API también proporciona rutas y funciones para toda la funcionalidad de la a
 
 ## URL de la Aplicacion
 
-https://github.com/KarenGtzSolis/APPFRISA2.0.git
-
+https://github.com/KarenGtzSolis/AppFrisaYCoFINAL.git
 
 ## Instalación 
 
